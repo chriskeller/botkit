@@ -13,4 +13,4 @@ RUN cd /app \
 
 WORKDIR /app
 
-CMD ["node", "jabber_env_bot.js"]
+CMD ["node", "jabber_env_bot.js", "DEBUG=bot"]

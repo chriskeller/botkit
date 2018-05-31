@@ -1,26 +1,40 @@
-const Botkit = require('botkit');
+
+const Botkit = require('./lib/Botkit.js');
+//const Botkit = require('botkit');
 const xml = require('@xmpp/xml');
 const debug = require('debug')('bot');
+const dotenv = require('dotenv');
 
 // read in env variables from file
-require('dotenv').config();
+const result = dotenv.config({path: '/app/secrets.env'});
+if (result.error) {
+  console.log("Error reading Environment variables from file: " + result.error)
+}
+console.log("Env parsing result: " + result.parsed)
 
 var nodered = require('./lib/middleware/middleware-node-red')({
-    nodered_uri: 'http://localhost:1880/chat'
+    //nodered_uri: 'http://localhost:1880/chat'
+    nodered_uri: process.env.NODERED_URL + '/chat'
 })
 
 var controller = Botkit.jabberbot({
     json_file_store: './bot/'
 });
 
+console.log('JID: ' + process.env.JABBER_JID);
+console.log('PWD: ' + process.env.JABBER_PWD);
+console.log('HOST: ' + process.env.JABBER_HOST);
+console.log('PORT: ' + process.env.JABBER_PORT);
+
 var bot = controller.spawn({
     client: {
         jid: 		process.env.JABBER_JID,
         password: 	process.env.JABBER_PWD,
         host: 		process.env.JABBER_HOST,
-        port: 		process.evn.JABBER_PORT
+        port: 		process.env.JABBER_PORT
     }
 });
+
 
 //controller.middleware.ingest.use(nodered.ingest);
 
